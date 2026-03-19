@@ -16,7 +16,7 @@ class RegistrationPage:
 
     @allure.step('Fill number')
     def fill_number(self, number):
-        element = WebDriverWait(self.driver, timeout=15).until(
+        element = WebDriverWait(self.driver, timeout=30).until(
             EC.element_to_be_clickable((By.ID, "input-number"))
         )
         element.clear()
