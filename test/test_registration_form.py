@@ -4,7 +4,6 @@ from pages.registration_page import RegistrationPage
 
 
 def test_registration_form(setup_browser, request):
-    # Получаем URL сайта
     site_url = request.config.getoption("--site-url") or os.getenv("SITE_URL")
 
     registration_page = RegistrationPage(setup_browser, site_url)

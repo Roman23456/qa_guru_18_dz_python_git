@@ -4,7 +4,6 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from dotenv import load_dotenv
 
-# Загружаем переменные из .env
 load_dotenv()
 
 from utils.attach import add_screenshot, add_page_source, add_console_logs, add_video
@@ -38,13 +37,12 @@ def pytest_addoption(parser):
 
 @pytest.fixture(scope='function')
 def setup_browser(request):
-    # Получаем параметры
     browser = request.config.getoption("--browser")
     browser_version = request.config.getoption("--browser-version")
     headless = request.config.getoption("--headless")
     window_width = request.config.getoption("--window-width")
     window_height = request.config.getoption("--window-height")
-    selenoid_url = request.config.getoption("--selenoid-url")  # <-- Добавляем это!
+    selenoid_url = request.config.getoption("--selenoid-url")
 
     options = Options()
     options.add_argument('--no-sandbox')
@@ -68,13 +66,12 @@ def setup_browser(request):
     options.capabilities.update(selenoid_capabilities)
 
     driver = webdriver.Remote(
-        command_executor=selenoid_url,  # Теперь здесь будет не None
+        command_executor=selenoid_url,
         options=options
     )
 
     yield driver
 
-    # Прикрепляем логи и видео
     add_screenshot(driver)
     add_page_source(driver)
     add_console_logs(driver)
