@@ -19,6 +19,7 @@ class RegistrationPage:
         element = WebDriverWait(self.driver, timeout=30).until(
             EC.element_to_be_clickable((By.ID, "input-number"))
         )
+        element.click()
         element.clear()
         element.send_keys(number)
 

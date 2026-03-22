@@ -1,4 +1,5 @@
 import pytest
+import logging
 import os
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -6,19 +7,23 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Настройка логирования
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
+logger = logging.getLogger(__name__)
+
 from utils.attach import add_screenshot, add_page_source, add_console_logs, add_video
 
 
 def pytest_addoption(parser):
     """Добавляем параметры командной строки"""
     parser.addoption("--test-number", action="store", default="1234356")
-
-    parser.addoption("--test-text", action="store", default="wwwww")
-
+    parser.addoption("--test-text", action="store", default="wwwwww")
     parser.addoption("--test-password", action="store", default="1234qj")
-
     parser.addoption("--test-date", action="store", default="10.08.1994")
-
     parser.addoption("--site-url", action="store", default=os.getenv("SITE_URL"),
                      help="URL тестируемого сайта")
     parser.addoption("--selenoid-url", action="store", default=os.getenv("SELENOID_URL"),
@@ -43,6 +48,17 @@ def setup_browser(request):
     window_width = request.config.getoption("--window-width")
     window_height = request.config.getoption("--window-height")
     selenoid_url = request.config.getoption("--selenoid-url")
+
+    # Логирование полученных параметров
+    logger.info("=" * 50)
+    logger.info("CONFIGURATION:")
+    logger.info(f"  Browser: {browser}")
+    logger.info(f"  Browser Version: {browser_version}")
+    logger.info(f"  Headless: {headless}")
+    logger.info(f"  Window Size: {window_width}x{window_height}")
+    logger.info(f"  Selenoid URL: {selenoid_url}")
+    logger.info(f"  Site URL: {request.config.getoption('--site-url')}")
+    logger.info("=" * 50)
 
     options = Options()
     options.add_argument('--no-sandbox')
@@ -76,5 +92,4 @@ def setup_browser(request):
     add_page_source(driver)
     add_console_logs(driver)
     add_video(driver)
-
     driver.quit()
